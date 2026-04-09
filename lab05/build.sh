@@ -2,7 +2,7 @@
 
 DOCKER_USERNAME="suwinho123"
 BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-VERSION="v3"
+VERSION="v4"
 NODE_ENV="production"
 
 docker buildx create --name multiarch --use 2>/dev/null || true

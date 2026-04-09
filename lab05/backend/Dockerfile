@@ -17,12 +17,13 @@ ARG BUILD_DATE
 ARG VERSION
 ARG NODE_ENV=production
 WORKDIR /app
+RUN apk add --no-cache curl
 RUN addgroup -S app && adduser -S app -G app
 COPY --from=deps --chown=app:app /app/node_modules ./node_modules
 COPY --chown=app:app . .
 USER app
-HEALTHCHECK --interval=30s --timeout=5s \
-  CMD wget -qO- http://localhost:3000/health || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+  CMD curl -f http://localhost:3000/health || exit 1
 
 EXPOSE 3000
 CMD ["node", "server.js"]

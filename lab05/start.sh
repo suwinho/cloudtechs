@@ -15,17 +15,17 @@ docker run -d --name postgres-db --network $NET -e POSTGRES_USER=user -e POSTGRE
 
 echo "🏗️ 2. Budowanie obrazów"
 docker build -t $BACK_IMG:latest ./backend
-docker build -t $FRONT_IMG:v2 ./frontend
+docker build -t $FRONT_IMG:latest ./frontend
 
 echo "🚀 3. Uruchamianie instancji Backend"
 docker run -d --name api-a --network $NET -e INSTANCE_ID="Serwer-A" -e PGHOST="postgres-db" -e PGPORT="5432" -e PGUSER="user" -e PGPASSWORD="password" -e PGDATABASE="productsdb" $BACK_IMG:latest
 docker run -d --name api-b --network $NET -e INSTANCE_ID="Serwer-B" -e PGHOST="postgres-db" -e PGPORT="5432" -e PGUSER="user" -e PGPASSWORD="password" -e PGDATABASE="productsdb" $BACK_IMG:latest
 
 echo "🌐 4. Uruchamianie Frontendu"
-docker run -d --name frontend --network $NET -p 80:80 $FRONT_IMG:v2
+docker run -d --name frontend --network $NET -p 80:80 $FRONT_IMG:latest
 
 echo "⏳ 5. Oczekiwanie na start usług (5s)..."
-sleep 60
+sleep 5
 
 echo "📊 6. TESTY LOAD BALANCINGU (2 próby)..."
 echo "--------------------------------------------"
