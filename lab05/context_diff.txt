@@ -1,0 +1,12 @@
+..\build_ignore.txt:#1 transferring dockerfile: 778B done
+..\build_ignore.txt:#3 transferring context: 102B done
+..\build_ignore.txt:#4 [internal] load build context
+..\build_ignore.txt:#4 transferring context: 258B done
+..\build_no_ignore.txt:#1 transferring dockerfile: 778B done
+..\build_no_ignore.txt:#3 transferring context: 2B done
+..\build_no_ignore.txt:#6 [internal] load build context
+..\build_no_ignore.txt:#6 [internal] load build context
+..\build_no_ignore.txt:#6 transferring context: 12.46MB 5.1s
+..\build_no_ignore.txt:#6 transferring context: 24.20MB 10.2s
+..\build_no_ignore.txt:#6 transferring context: 35.24MB 15.2s
+..\build_no_ignore.txt:#6 transferring context: 35.93MB 15.6s done

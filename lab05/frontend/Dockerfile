@@ -8,7 +8,7 @@ WORKDIR app/
 COPY package*.json .
 RUN npm ci
 
-From node:22-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR app/
 RUN addgroup -S app && adduser -S app -G app
 COPY --from=deps --chown=app:app /app/node_modules ./node_modules
@@ -17,6 +17,9 @@ RUN npm run build
 
 # NGINX
 FROM nginx:stable-alpine AS production
+ARG BUILD_DATE
+ARG VERSION
+ARG NODE_ENV=production
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY cache.conf /etc/nginx/conf.d/cache.conf
 COPY --from=builder --chown=nginx:nginx /app/dist /usr/share/nginx/html

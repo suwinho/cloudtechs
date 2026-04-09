@@ -2,17 +2,20 @@ ARG BUILD_DATE
 ARG VERSION
 ARG NODE_ENV=production
 
-From node:18-alpine AS deps
+FROM node:18-alpine AS deps
 WORKDIR /app
 COPY package*.json ./ 
 RUN npm ci --only=production
 
-From deps AS test
+FROM deps AS test
 RUN npm install
 COPY . .
 RUN npm test
 
-From node:18-alpine AS production
+FROM node:18-alpine AS production
+ARG BUILD_DATE
+ARG VERSION
+ARG NODE_ENV=production
 WORKDIR /app
 RUN addgroup -S app && adduser -S app -G app
 COPY --from=deps --chown=app:app /app/node_modules ./node_modules

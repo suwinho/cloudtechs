@@ -1,0 +1,56 @@
+# 1. Przygotowanie przestrzeni i buildx dla obrazów wieloplatformowych (wykonaj raz)
+docker buildx create --name multinode --use
+
+# ======= BACKEND =======
+
+# 2. Budowanie i publikowanie nowej wersji (v3) dla backendu [WIELOPLATFORMOWE]
+# Ważne: pamiętaj aby zamienić '<twój_rejestr>' na swoją rzeczywistą nazwę na Docker Hub (np. suwinho)
+cd backend
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+  --build-arg VERSION=v3 \
+  --build-arg NODE_ENV=production \
+  -t <twój_rejestr>/test-backend:v3 \
+  --push \
+  .
+
+# 3. Dodatkowo: wybudowanie obrazu tylko lokalnie z flagą --load (przydatne do zweryfikowania etykiet poleceniem inspect)
+docker buildx build \
+  --platform linux/amd64 \
+  --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+  --build-arg VERSION=v3 \
+  --build-arg NODE_ENV=production \
+  -t test-backend:v3 \
+  --load \
+  .
+
+# 4. Sprawdzenie przypisanych etykiet OCI na wynikowym lokalnym obrazie
+docker inspect test-backend:v3 --format '{{json .Config.Labels}}'
+
+
+# ======= FRONTEND =======
+
+# 5. Budowanie i publikowanie nowej wersji (v3) dla frontendu [WIELOPLATFORMOWE]
+cd ../frontend
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+  --build-arg VERSION=v3 \
+  --build-arg NODE_ENV=production \
+  -t <twój_rejestr>/test-frontend:v3 \
+  --push \
+  .
+
+# 6. Lokalny build do weryfikacji etykiet (Frontend)
+docker buildx build \
+  --platform linux/amd64 \
+  --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+  --build-arg VERSION=v3 \
+  --build-arg NODE_ENV=production \
+  -t test-frontend:v3 \
+  --load \
+  .
+
+# 7. Inspekcja etykiet OCI frontendu
+docker inspect test-frontend:v3 --format '{{json .Config.Labels}}'
