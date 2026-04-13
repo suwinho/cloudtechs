@@ -4,6 +4,8 @@ import { Activity, Server, Hash, AlertCircle, RefreshCw, Clock, Zap } from 'luci
 
 export default function Stats() {
   const [stats, setStats] = useState(null);
+  const [health, setHealth] = useState(null);
+  const [cacheStatus, setCacheStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -11,16 +13,29 @@ export default function Stats() {
   const fetchStats = async () => {
     try {
       setRefreshing(true);
-      const apiUrl = window.location.port === '5173' ? 'http://localhost:3000/stats' : '/stats';
-      const response = await axios.get(apiUrl);
-      setStats(response.data);
+      const apiUrl = window.location.port === '5173' ? 'http://localhost:3000/stats' : '/api/stats';
+      const healthUrl = window.location.port === '5173' ? 'http://localhost:3000/health' : '/api/health';
+      
+      const [statsRes, healthRes] = await Promise.all([
+        axios.get(apiUrl),
+        axios.get(healthUrl).catch(() => ({ data: null }))
+      ]);
+      
+      setStats(statsRes.data);
+      setCacheStatus(statsRes.headers['x-cache'] || 'MISS');
+      if (healthRes.data) setHealth(healthRes.data);
       setError(null);
     } catch (err) {
       console.error('Error fetching stats:', err);
       // Fallback for local testing
       try {
-        const fallbackRes = await axios.get('http://localhost:3000/stats');
-        setStats(fallbackRes.data);
+        const [fallbackStats, fallbackHealth] = await Promise.all([
+          axios.get('http://localhost:3000/stats'),
+          axios.get('http://localhost:3000/health').catch(() => ({ data: null }))
+        ]);
+        setStats(fallbackStats.data);
+        setCacheStatus(fallbackStats.headers['x-cache'] || 'MISS');
+        if (fallbackHealth.data) setHealth(fallbackHealth.data);
         setError(null);
       } catch (e) {
         setError('Failed to fetch statistics. Backend unavailable.');
@@ -39,8 +54,8 @@ export default function Stats() {
     <div className="animate-fade-in">
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div>
-          <h1>Statistics</h1>
-          <p className="subtitle">System metrics and backend information</p>
+          <h1>Statistics & Health</h1>
+          <p className="subtitle">System metrics, caching info, and backend health</p>
         </div>
         <button 
           onClick={fetchStats} 
@@ -144,6 +159,52 @@ export default function Stats() {
             </div>
             <div style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--text-main)', marginTop: '0.5rem' }}>
               {stats?.requests || 0}
+            </div>
+          </div>
+          
+          {/* Cache Status Stat */}
+          <div className="card" style={{ position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: 0.1, color: cacheStatus === 'HIT' ? '#10b981' : '#f59e0b' }}>
+              <Zap size={120} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+              <div style={{ width: '48px', height: '48px', background: cacheStatus === 'HIT' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: cacheStatus === 'HIT' ? '#10b981' : '#f59e0b' }}>
+                <Zap size={24} />
+              </div>
+              <h2 style={{ fontSize: '1.1rem', color: 'var(--text-muted)', fontWeight: '500' }}>Redis Cache</h2>
+            </div>
+            <div style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--text-main)', marginTop: '0.5rem' }}>
+              {cacheStatus}
+            </div>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.75rem' }}>
+              X-Cache Header Status
+            </p>
+          </div>
+
+          {/* Health Status Stat */}
+          <div className="card" style={{ position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: 0.1, color: '#8b5cf6' }}>
+              <Activity size={120} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+              <div style={{ width: '48px', height: '48px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8b5cf6' }}>
+                <Activity size={24} />
+              </div>
+              <h2 style={{ fontSize: '1.1rem', color: 'var(--text-muted)', fontWeight: '500' }}>Services Health</h2>
+            </div>
+            <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem', background: 'rgba(15, 23, 42, 0.5)', borderRadius: '6px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>PostgreSQL:</span>
+                <span style={{ fontWeight: '500', color: health?.postgresql === 'connected' ? '#10b981' : '#ef4444' }}>
+                  {health?.postgresql || 'Unknown'}
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem', background: 'rgba(15, 23, 42, 0.5)', borderRadius: '6px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Redis:</span>
+                <span style={{ fontWeight: '500', color: health?.redis === 'connected' ? '#10b981' : '#ef4444' }}>
+                  {health?.redis || 'Unknown'}
+                </span>
+              </div>
             </div>
           </div>
         </div>

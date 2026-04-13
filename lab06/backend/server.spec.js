@@ -1,4 +1,17 @@
 const request = require('supertest');
+
+// Mock Redis BEFORE importing server
+jest.mock('redis', () => ({
+  createClient: () => ({
+    on: jest.fn(),
+    connect: jest.fn().mockResolvedValue(),
+    isReady: false,
+    get: jest.fn(),
+    setEx: jest.fn(),
+    quit: jest.fn().mockResolvedValue(),
+  })
+}));
+
 const app = require('./server');
 const { pool } = require('./db');
 
@@ -15,6 +28,7 @@ describe('API Endpoints', () => {
   });
 
   test('GET /health zwraca 200 i poprawne pole status oraz uptime', async () => {
+    pool.query.mockResolvedValueOnce({ rows: [{ count: '1' }] });
     const res = await request(app).get('/health');
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty('status', 'ok');

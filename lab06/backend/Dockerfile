@@ -19,6 +19,7 @@ ARG NODE_ENV=production
 WORKDIR /app
 RUN apk add --no-cache curl
 RUN addgroup -S app && adduser -S app -G app
+COPY --from=test /app/package.json /tmp/test_verify
 COPY --from=deps --chown=app:app /app/node_modules ./node_modules
 COPY --chown=app:app . .
 USER app

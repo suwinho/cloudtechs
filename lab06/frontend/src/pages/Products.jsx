@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Plus, Tag, DollarSign, Package, AlertCircle } from 'lucide-react';
 
-// Using relative path for API, typical for Nginx reverse proxy setup. 
-// For local dev without nginx, we could fall back to localhost:3000
-const API_BASE = '/api';
+// In Docker (Nginx), API is under /api/. In local dev (port 5173), hit backend directly.
 
 export default function Products() {
   const [items, setItems] = useState([]);
@@ -20,7 +18,7 @@ export default function Products() {
     try {
       setLoading(true);
       // Let's assume the dev uses Nginx that routes /api to backend, or direct to backend if run locally
-      const apiUrl = window.location.port === '5173' ? 'http://localhost:3000/items' : '/items';
+      const apiUrl = window.location.port === '5173' ? 'http://localhost:3000/items' : '/api/items';
       const response = await axios.get(apiUrl);
       setItems(response.data);
       setError(null);
@@ -49,7 +47,7 @@ export default function Products() {
 
     try {
       setSubmitting(true);
-      const apiUrl = window.location.port === '5173' ? 'http://localhost:3000/items' : '/items';
+      const apiUrl = window.location.port === '5173' ? 'http://localhost:3000/items' : '/api/items';
       await axios.post(apiUrl, { name, price: Number(price) });
       
       // Reset form and refresh list
