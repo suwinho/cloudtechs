@@ -2,7 +2,7 @@
 set -x
 
 USER="suwinho123"
-VERSION="v5"
+VERSION="v2"
 NET="demo-net"
 
 

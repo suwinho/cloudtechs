@@ -2,7 +2,7 @@
 set -e
 
 USER="suwinho123"
-VERSION="v5"
+VERSION="v2"
 BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 
 docker buildx create --name multiarch --use 

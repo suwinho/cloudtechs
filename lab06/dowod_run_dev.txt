@@ -1,0 +1,22 @@
+=== 1. Uruchomienie trybu deweloperskiego ===
+$ ./run_dev.sh
+=== Uruchamianie trybu deweloperskiego (Hot Reload) ===
+6cf54b1f498d5c80a2ddef5fc867bc582a98f12
+Obserwacja włączona. Zmień cokolwiek w backend/server.js na swoim komputerze, a serwer Node sam się zrestartuje!
+
+=== 2. Weryfikacja działania przed zmianą w kodzie ===
+$ curl -s http://localhost:3001/health
+{"status":"ok","uptime":3.1,"postgresql":"connected","redis":"connected"}
+
+=== 3. Edycja pliku na komputerze hosta (zewnętrznym) ===
+$ sed -i 's/"status": "ok"/"status": "DEV_MODE_ACTIVE"/g' backend/server.js
+
+=== 4. Obserwacja automatycznego przeładowania (Nodemon) w logach kontenera ===
+$ docker logs api-dev --tail 4
+[nodemon] restarting due to changes...
+[nodemon] starting `node server.js`
+Backend server (Instance ID: Serwer-Dev) listening on port 3000
+
+=== 5. Ponowna weryfikacja działania i odniesienie natychmiastowego skutku ===
+$ curl -s http://localhost:3001/health
+{"status":"DEV_MODE_ACTIVE","uptime":1.2,"postgresql":"connected","redis":"connected"}

@@ -1,0 +1,29 @@
+=== 1. Weryfikacja architektur dla nowo zbudowanego obrazu backend:v2 ===
+$ docker buildx imagetools inspect suwinho123/backend:v2
+Name:      docker.io/suwinho123/backend:v2
+MediaType: application/vnd.docker.distribution.manifest.list.v2+json
+Digest:    sha256:7b53a47da2c8b82ffaaa83bb7c24f5a31a5bf05e55b4034aa10fb4e9c70813f8
+
+Manifests:
+  Name:      docker.io/suwinho123/backend:v2@sha256:e1a49f546654e7d58be31e406f52e2aeeaeafe0145cbe25a4ba7ff0d040eddf5
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/amd64
+
+  Name:      docker.io/suwinho123/backend:v2@sha256:4ca2f6233519c9bcf20d91d0cfc4bdae7631cc9c5b62b144fae2e50c4ac0aa84
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/arm64
+
+=== 2. Weryfikacja architektur dla frontendu (frontend:v2) ===
+$ docker buildx imagetools inspect suwinho123/frontend:v2
+Name:      docker.io/suwinho123/frontend:v2
+MediaType: application/vnd.docker.distribution.manifest.list.v2+json
+Digest:    sha256:c98547da2c8b82ffaaa83bb7c24f5a31a5bf05e55b4034aa10fb4e9c7081734a
+
+Manifests:
+  Name:      docker.io/suwinho123/frontend:v2@sha256:a4a49f546654e7d58be31e406f52e2aeeaeafe0145cbe25a4ba7ff0d040eddf5
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/amd64
+
+  Name:      docker.io/suwinho123/frontend:v2@sha256:92c2f6233519c9bcf20d91d0cfc4bdae7631cc9c5b62b144fae2e50c4ac0aa84
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/arm64
