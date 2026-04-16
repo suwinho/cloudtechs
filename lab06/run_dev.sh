@@ -14,4 +14,3 @@ docker run -d \
   -e REDIS_URL="redis://redis-db:6379" \
   node:18-alpine \
   sh -c "npm install && npx -y nodemon server.js"
-echo "Obserwacja włączona. Zmień cokolwiek w backend/server.js na swoim komputerze, a serwer Node sam się zrestartuje!"

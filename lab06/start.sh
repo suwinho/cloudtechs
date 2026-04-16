@@ -18,7 +18,7 @@ docker run -d --name postgres-db --network $NET \
   -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=productsdb \
   postgres:15-alpine
 
-docker run -d --name redis-db --network $NET --tmpfs /data redis:7-alpine
+docker run -d --name redis-db --network $NET --tmpfs //data redis:7-alpine
 
 echo "Czekam 5 sekund na start PostgreSQL..."
 sleep 5
