@@ -1,0 +1,30 @@
+=== 1. Pierwsze żądanie statystyk (Redis jest pusty, więc MISS) ===
+$ curl -I -s http://localhost/api/stats
+HTTP/1.1 200 OK
+Server: nginx/1.24.0
+Content-Type: application/json; charset=utf-8
+X-Cache: MISS
+Content-Length: 133
+Connection: keep-alive
+
+=== 2. Kolejne żądanie (w przeciągu TTL 10s, więc HIT) ===
+$ curl -I -s http://localhost/api/stats
+HTTP/1.1 200 OK
+Server: nginx/1.24.0
+Content-Type: application/json; charset=utf-8
+X-Cache: HIT
+Content-Length: 133
+Connection: keep-alive
+
+=== 3. Restart kontenera Redis udowadniający ulotność (dane na tmpfs) ===
+$ docker restart redis-db
+redis-db
+
+=== 4. Ponowne żądnie statystyk od razu po restarcie (Redis wyczyszczony, więc MISS) ===
+$ curl -I -s http://localhost/api/stats
+HTTP/1.1 200 OK
+Server: nginx/1.24.0
+Content-Type: application/json; charset=utf-8
+X-Cache: MISS
+Content-Length: 133
+Connection: keep-alive

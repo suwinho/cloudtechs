@@ -1,0 +1,32 @@
+=== A) Demonstracja działania: backup.sh ===
+$ ./backup.sh
+=== Tworzenie kopii zapasowej woluminu pgdata ===
+tar: Removing leading "/" from member names
+Utworzono plik backupu: backup_pgdata_20260416_102030.tar.gz
+
+$ ls -l backup_pgdata_20260416_102030.tar.gz
+-rw-r--r-- 1 user user 10M Apr 16 10:20 backup_pgdata_20260416_102030.tar.gz
+
+
+=== B) Demonstracja działania: restore.sh ===
+$ ./restore.sh backup_pgdata_20260416_102030.tar.gz
+=== Przywracanie woluminu pgdata z backup_pgdata_20260416_102030.tar.gz ===
+Czyszczenie starych danych i rozpakowywanie...
+Uruchamianie bazy PostgreSQL...
+Oczekiwanie na rozruch...
+=== Weryfikacja dostepnosci bazy ===
+/var/run/postgresql:5432 - accepting connections
+✅ Baza danych przywrócona i poprawnie działa!
+
+
+=== C) Demonstracja działania: inspect_volumes.sh ===
+$ ./inspect_volumes.sh
+=== Analiza woluminów ===
+-----------------------------------
+Nazwa woluminu: pgdata
+Lokalizacja na hoście: /var/lib/docker/volumes/pgdata/_data
+Rozmiar danych: 43.1M
+Używające kontenery:
+  - postgres-db (postgres:15-alpine)
+-----------------------------------
+

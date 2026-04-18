@@ -1,0 +1,15 @@
+=== 1. Dodanie produktu przed restartem ===
+$ curl -X POST http://localhost/api/items -H "Content-Type: application/json" -d '{"name": "Trwaly_Produkt", "price": 100}'
+{"id": 4, "name": "Trwaly_Produkt", "price": "100.00"}
+
+=== 2. Sprawdzenie stanu bazy przed restartem ===
+$ curl -s http://localhost/api/items
+[{"id":1,"name":"Sample Product 1","price":"19.99"},{"id":2,"name":"Sample Product 2","price":"29.99"},{"id":3,"name":"Test Product","price":"99.99"},{"id":4,"name":"Trwaly_Produkt","price":"100.00"}]
+
+=== 3. Restart kontenera bazy PostgreSQL ===
+$ docker restart postgres-db
+postgres-db
+
+=== 4. Sprawdzenie stanu bazy po restarcie (dane przetrwały w woluminie 'pgdata') ===
+$ curl -s http://localhost/api/items
+[{"id":1,"name":"Sample Product 1","price":"19.99"},{"id":2,"name":"Sample Product 2","price":"29.99"},{"id":3,"name":"Test Product","price":"99.99"},{"id":4,"name":"Trwaly_Produkt","price":"100.00"}]
