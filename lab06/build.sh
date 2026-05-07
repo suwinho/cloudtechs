@@ -22,12 +22,8 @@ echo "=== Weryfikacja ==="
 docker buildx imagetools inspect $USER/backend:$VERSION
 docker buildx imagetools inspect $USER/frontend:$VERSION
 
-echo "=== Lokalny build ==="
-docker build --build-arg BUILD_DATE=$BUILD_DATE --build-arg VERSION=$VERSION \
-  -t $USER/backend:$VERSION ./backend
-
-docker build --build-arg BUILD_DATE=$BUILD_DATE --build-arg VERSION=$VERSION \
-  -t $USER/frontend:$VERSION ./frontend
+docker pull $USER/backend:$VERSION
+docker pull $USER/frontend:$VERSION
 
 echo "=== Etykiety ==="
 docker inspect $USER/backend:$VERSION --format '{{json .Config.Labels}}'
