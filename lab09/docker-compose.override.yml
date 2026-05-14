@@ -1,0 +1,27 @@
+services:
+  frontend:
+    ports:
+      - "80:80"
+    configs:
+      - source: nginx_config
+        target: /etc/nginx/nginx.conf
+
+  backend_1:
+    configs:
+      - source: app_config
+        target: /app/app.config.json
+
+  backend_2:
+    configs:
+      - source: app_config
+        target: /app/app.config.json
+
+  postgres:
+    ports:
+      - "5432:5432"
+
+configs:
+  nginx_config:
+    file: ./nginx.conf
+  app_config:
+    file: ./backend/app.config.json
